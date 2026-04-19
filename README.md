@@ -8,7 +8,7 @@ I kept losing hours scrolling and consuming content without realising how much t
 
 ## Preview
 
-![App screenshot](screenshot.png)
+![App screenshot]([screenshot.png](https://github.com/user-attachments/assets/87f88102-0093-4c60-86df-267160c0feac))
 
 ## Features
 
