@@ -34,4 +34,4 @@ HTML, Tailwind CSS, vanilla JavaScript
 
 ## Live Demo
 
-[View it here]([your-link-here](https://create-v-consume.vercel.app/))
+[View it here](https://create-v-consume.vercel.app/)
