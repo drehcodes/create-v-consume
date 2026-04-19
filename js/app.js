@@ -298,9 +298,9 @@ consumingToggle.addEventListener('click', () => setMode('Consuming'));
 closeModalBtn.addEventListener('click', () => modal.classList.add('hidden'));
 modalSaveEntry.addEventListener('click', updateEntry);
 modalSecondsInput.addEventListener('input', () => clampInputValue(modalSecondsInput, 0, 59));
-  modalMinutesInput.addEventListener('input', () => clampInputValue(modalMinutesInput, 0, 59));
-  modalHoursInput.addEventListener('input', () => {
+modalMinutesInput.addEventListener('input', () => clampInputValue(modalMinutesInput, 0, 59));
+modalHoursInput.addEventListener('input', () => {
   if (Number(modalHoursInput.value) < 0) modalHoursInput.value = 0;
-  });
+});
 
 init();
