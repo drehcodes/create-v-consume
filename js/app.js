@@ -25,8 +25,9 @@ const ratioInfo = document.querySelector('#ratio-info');
 //Entry List Variable
 const entryList = document.querySelector('#entries-list');
 
-let elapsedSeconds = 0;
 let isRunning = false;
+let accumulatedSeconds = 0;
+let startTimeStamp;
 let timerInterval;
 let modeStatus = 'Creating';
 
@@ -35,7 +36,7 @@ let currentEdit;
 let entries = load('entries') || [];
 
 //Timer
-const updateTimerDisplay = () => timerDisplay.textContent = formatTime(elapsedSeconds);
+const updateTimerDisplay = () => timerDisplay.textContent = formatTime(getElapsedSeconds());
 
 function formatTime(elapsedSeconds) {
   const h = Math.floor(elapsedSeconds / 3600);
@@ -53,36 +54,45 @@ function startTimer() {
   isRunning = true;
   showPauseIcon();
 
+  startTimeStamp = Date.now();
+  save('timerState', {startTimeStamp, accumulatedSeconds, isRunning: true});
+
   timerInterval = setInterval(() => {
-    elapsedSeconds++
     updateTimerDisplay();
   }, 1000);
 }
 
 function pauseTimer() {
   isRunning = false;
-  
   showPlayIcon();
   clearInterval(timerInterval);
+
+  accumulatedSeconds = getElapsedSeconds();
+  startTimeStamp = null;
+
+  save('timerState', {startTimeStamp: null, accumulatedSeconds, isRunning: false});
 }
 
 function resetTimer() {
   isRunning = false;
   showPlayIcon();
-
   clearInterval(timerInterval);
-  elapsedSeconds = 0;
+
+  accumulatedSeconds = 0;
+  startTimeStamp = null;
+
+  save('timerState', {startTimeStamp: null, accumulatedSeconds: 0, isRunning:false});
   updateTimerDisplay();
 }
 
 // Entries
 function addEntry() {
-  if (elapsedSeconds === 0) return;
+  if (getElapsedSeconds() === 0) return;
 
   const entry = {
     id: Date.now(),
     mode: modeStatus,
-    duration: elapsedSeconds,
+    duration: getElapsedSeconds(),
     date: new Date().toLocaleString()
   }
 
@@ -284,7 +294,26 @@ function clampInputValue(input, min, max) {
   if (value < min) input.value = min;
 }
 
+function getElapsedSeconds() {
+  if (!startTimeStamp) return accumulatedSeconds;
+  return accumulatedSeconds + (Date.now() - startTimeStamp) / 1000;
+}
+
 function init() {
+  const savedTimer = load('timerState');
+  if (savedTimer) {
+    accumulatedSeconds = savedTimer.accumulatedSeconds;
+    startTimeStamp = savedTimer.startTimeStamp;
+    isRunning = savedTimer.isRunning;
+
+    if (isRunning) {
+      showPauseIcon();
+      timerInterval = setInterval(updateTimerDisplay, 1000);
+    }
+    updateTimerDisplay();
+  }
+
+
   renderEntries();
   updateRatioBar();
 }
